@@ -1,0 +1,24 @@
+---
+- name: Configure bowtie and user access to the vm 
+  hosts: demo
+  remote_user: cloud-user
+  sudo: yes
+
+  tasks:
+   - name: Create_user
+     user: name=training shell=/bin/bash groups=wheel append=yes password='{{password}}' update_password=always
+
+   - name: authenticate with password when ssh
+     lineinfile: dest=/etc/ssh/sshd_config regexp='^PasswordAuthentication' line='PasswordAuthentication yes'
+
+   - name: restart_sshd
+     service: name=sshd state=restarted
+
+   - name: Install unzip
+     yum: name=unzip state=present
+
+   - name: Download bowtie
+     get_url: url=https://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.9/bowtie2-2.2.9-linux-x86_64.zip dest=/home/training/bowtie2-2.2.9-linux-x86_64.zip mode=0664
+
+   - name: Unpack bowtie
+     unarchive: copy=no src=/home/training/bowtie2-2.2.9-linux-x86_64.zip dest=/home/training/ owner=training

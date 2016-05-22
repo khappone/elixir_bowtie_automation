@@ -1,0 +1,6 @@
+[demo]
+ip_address_of_vm
+[demo:vars]
+#e.g. create with "mkpasswd -m sha-256"
+password=password_hash
+
